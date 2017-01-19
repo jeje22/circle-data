@@ -4,8 +4,8 @@ Javascript code that lets you have 2 datas shown in one circle
 # How to use
 1) initialize(data)
 with data:
-- start_x: *double*,
-- start_y: *double*,
+- percentage: *double*,
+- way: *int* **0:left, 1:right, currently only values possible**,
 - radius: *double*,
 - nb_circles: *int* **must be <=2**,
 - circles: *array of objects* **must contain same number of objects as nb_circles**

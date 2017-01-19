@@ -8,10 +8,12 @@ var start_y;
 var radius;
 var nb_circles;
 var percentages=[];
+var ways=[];
 var start_circles=[];
 var end_circles=[];
 var alphas=[];
 var colors=[];
+var values=[];
 
 function initialise(data)
 {
@@ -31,10 +33,25 @@ function initialise(data)
 		for(circle of circles)
 		{
 			percentages.push(circle.percentage);
-			start_circles.push(circle.start);
-			end_circles.push(circle.end);
+			ways.push(circle.way);
+			if(circle.way==0)
+			{
+				start_circles.push(1-circle.percentage);
+				end_circles.push(1+circle.percentage);
+			}
+			else if(circle.way==1)
+			{
+				start_circles.push(2-circle.percentage);
+				end_circles.push(2+circle.percentage);
+			}
+			else
+			{
+				res=false;
+				break;
+			}
 			alphas.push(circle.alpha);
 			colors.push(circle.color);
+			values.push(circle.value);
 		}
 	}
 	return res;
@@ -55,7 +72,7 @@ function legend()
 	context.fillStyle = "green";
 	context.lineWidth=radius/75;
 	context.font = radius/4+"px Arial";
-	context.fillText("75 MW",start_x+1.5*radius+10,start_y-radius+percentages[0]*1.7*radius);
+	context.fillText(values[0],start_x+1.5*radius+10,start_y-radius+percentages[0]*1.7*radius);
 	context.stroke();
 
 	context.beginPath();
@@ -64,7 +81,7 @@ function legend()
 	context.lineTo(start_x+1.5*radius, start_y+radius-percentages[1]*1.7*radius);
 	context.fillStyle = "blue";
 	context.font = radius/4+"px Arial";
-	context.fillText("10 MVar",start_x+1.5*radius+10, start_y+radius-percentages[1]*1.7*radius);
+	context.fillText(values[1],start_x+1.5*radius+10, start_y+radius-percentages[1]*1.7*radius);
 	context.stroke();
 }
 
