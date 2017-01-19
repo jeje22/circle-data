@@ -7,6 +7,7 @@ var start_x;
 var start_y;
 var radius;
 var nb_circles;
+var percentages=[];
 var start_circles=[];
 var end_circles=[];
 var alphas=[];
@@ -29,6 +30,7 @@ function initialise(data)
 		circles=data.circles;
 		for(circle of circles)
 		{
+			percentages.push(circle.percentage);
 			start_circles.push(circle.start);
 			end_circles.push(circle.end);
 			alphas.push(circle.alpha);
@@ -44,16 +46,38 @@ function toRadians (angle)
 	return angle * (Math.PI / 180);
 }
 
+function legend()
+{
+	context.beginPath();
+	context.strokeStyle = 'green';
+	context.moveTo(start_x-radius+percentages[0]*radius,start_y-radius+percentages[0]*1.7*radius);
+	context.lineTo(start_x+1.5*radius, start_y-radius+percentages[0]*1.7*radius);
+	context.fillStyle = "green";
+	context.lineWidth=radius/75;
+	context.font = radius/4+"px Arial";
+	context.fillText("75 MW",start_x+1.5*radius+10,start_y-radius+percentages[0]*1.7*radius);
+	context.stroke();
+
+	context.beginPath();
+	context.strokeStyle = 'blue';
+	context.moveTo(start_x+radius-percentages[1]*radius,start_y+radius-percentages[1]*1.7*radius);
+	context.lineTo(start_x+1.5*radius, start_y+radius-percentages[1]*1.7*radius);
+	context.fillStyle = "blue";
+	context.font = radius/4+"px Arial";
+	context.fillText("10 MVar",start_x+1.5*radius+10, start_y+radius-percentages[1]*1.7*radius);
+	context.stroke();
+}
+
 
 function draw()
 {
-	var separator=Math.round(radius/18.75);
+	var separator=Math.round(radius/50);
 
 	// 1st circle
 	context.beginPath();
 	context.fillStyle = colors[0];
 	context.globalAlpha=alphas[0];
-	context.arc(start_x,start_y,radius,start_circles[0]*Math.PI,end_circles[0]*Math.PI);
+	context.arc(start_x,start_y,radius,(start_circles[0])*Math.PI,(end_circles[0])*Math.PI);
 	context.fill();
 
 	var angle=(360*(end_circles[0]-start_circles[0])/2)/2-90;
@@ -74,12 +98,29 @@ function draw()
 	context.lineTo(x,start_y+y);
 	context.stroke();
 
+	context.beginPath();
+	context.moveTo(x,start_y-y);
+	for(var i=0;i<2*y;i+=4)
+	{
+		if(i%8==0)
+		{
+			context.lineTo(x-separator,start_y-y+i);
+			context.fill();
+			context.beginPath();
+		}
+		else
+		{
+			context.lineTo(x+separator,start_y-y+i);
+		}
+	}
+	
+
 	if(nb_circles>1)
 	{
 		// 2nd circle
 		context.beginPath();
-		context.fillStyle = 'cyan';
-		context.globalAlpha=0.6;
+		context.fillStyle = colors[1];
+		context.globalAlpha=alphas[1];
 		context.arc(start_x,start_y,radius,start_circles[1]*Math.PI,end_circles[1]*Math.PI);
 		context.fill();
 
@@ -92,7 +133,6 @@ function draw()
 			if(i%8==0)
 			{
 				context.lineTo(x-separator,start_y-y+i);
-				//context.fill();
 			}
 			else
 			{
@@ -103,8 +143,11 @@ function draw()
 		context.stroke();
 	}
 
-	// Big Circle
+	legend();
+
+	// The actual Circle
 	context.beginPath();
+	context.strokeStyle = 'black';
 	context.lineWidth=2;
 	context.arc(start_x,start_y,radius,0,Math.PI*2);
 	context.stroke();
